@@ -1,0 +1,23 @@
+{
+  "name": "surfaccepter",
+  "version": "1.0.0",
+  "description": "A simple page to accept neosurf payments.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akhalid7/surfaccepter.git"
+  },
+  "author": "Abdullah",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/akhalid7/surfaccepter/issues"
+  },
+  "homepage": "https://github.com/akhalid7/surfaccepter#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  }
+}
