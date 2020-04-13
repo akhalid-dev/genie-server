@@ -6,6 +6,6 @@ const controller = require('./controllers/admin');
 
 app.set('view engine', 'ejs');
 
-app.get('/', controller.getShop);
+app.get('/', controller.getDash);
 
 app.listen(port);
