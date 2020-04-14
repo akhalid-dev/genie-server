@@ -6,39 +6,49 @@ const parser = new rss({
 
 const cheerio = require('cheerio');
 
-const parseStore = ({user, site, delay, sold}) => {
-    let link = "http://www.ebay." + site + "/sch/rss/m.html?_ssn=" + user + "&_dmd=7" + "&_ipg=200" + "&_rss=1"; 
+const fs = require('fs');
+
+const parseStore = async ({user, site, delay, sold}) => {
+    let link = "http://www.ebay." + site + "/sch/rss/m.html?_ssn=" + user + "&_dmd=7" + "&_ipg=100" + "&_rss=1"; 
     if(sold) {
         link = link + "&LH_Sold=1" + "&LH_Complete=1";
     }
     link = link + "&_pgn=1";
     
-    parsePage({link: link, modified: false, delay: delay, items:{}})
-    .then(({link, modified, count, items}) => {
-        if(modified) {
-            console.log("called...");
-            const newPageNum = Number(link.substring(link.lastIndexOf("=") + 1)) + 1;
-            const newLink = link.substring(0, link.lastIndexOf('=') + 1) + newPageNum.toString();
-            console.log(newLink);
-            parsePage({link: link, modified: modified, count: count, items: items});
-        } else {
+    sequencer({link: link, modified: false, delay: delay, items:new Map(), count:0});
+    
 
-        }
-    })
-    .catch((err) => {
-        console.log(err);
-    })
 }
 
-const parsePage = ({link, modified, delay, items}) => {
+const sequencer = (props) => {
+        parsePage(props)
+        .then((result) => {
+            if(result.modified) {
+                const newPageNum = Number(result.link.substring(result.link.lastIndexOf("=") + 1)) + 1;
+                const newLink = result.link.substring(0, result.link.lastIndexOf('=') + 1) + newPageNum.toString();
+                result.link  = newLink;
+                console.log(result.link)
+                sequencer(result);
+            } else {
+                for (const entry of result.items.entries()) {
+                    console.log(entry);
+                }
+            }
+        })
+        .catch((err) => {
+            reject(err);
+        })
+
+}
+
+const parsePage = ({link, modified, delay, items, count}) => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
-            
+            console.log(link, modified, delay, count);
             parser.parseURL(link, (err, feed) => {
                 if (err) reject(err);
-                let count = 0;
+                let change = false;
                 feed.items.forEach(entry => {  
-                    count = count + 1;   
                     //Item number from URL:
                     let re = /\?[0-9]*/; 
                     const itemNumber = reverseString(re.exec(reverseString(entry.link))[0]).replace('?','');
@@ -49,19 +59,19 @@ const parsePage = ({link, modified, delay, items}) => {
                     const imageURL = $("img").attr('src');
                     const price = $("strong").text();
                     
-                    if (!items.hasOwnProperty(itemNumber)) {
-                        items[itemNumber] = ({
+                    if (!items.has(itemNumber)) {
+                        items.set(itemNumber, {
                             url: url,
                             title: title,
                             imageURL: imageURL,
                             price: price,
                             itemNumber: itemNumber
                         });
-                        modified = true;
+                        change = true;
+                        count = count + 1;   
                     }
                 })
-                console.log(count);
-                resolve({link: link, modified: modified, count: count, items: items});
+                resolve({link: link, modified: change, count: count, items: items, delay: delay});
             });
         }, delay + Math.random() * 5000);
     })
@@ -72,6 +82,6 @@ const reverseString = (text) => {
 }
 
 
-parseStore({user:'achstar91', site:'co.uk', delay:1, sold:true});
+parseStore({user:'achstar91', site:'co.uk', delay:2500, sold:false});
 //parseStore('achstar91', 'co.uk')
 
