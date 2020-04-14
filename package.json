@@ -1,7 +1,7 @@
 {
   "name": "surfaccepter",
   "version": "1.0.0",
-  "description": "A simple page to accept neosurf payments.",
+  "description": "A software to run DS tasks.",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -21,8 +21,9 @@
     "nodemon": "^2.0.3"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
     "ejs": "^3.0.2",
     "express": "^4.17.1",
-    "stripe": "^8.39.1"
+    "rss-parser": "^3.7.6"
   }
 }
