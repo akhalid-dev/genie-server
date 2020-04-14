@@ -6,14 +6,21 @@ const parser = new rss({
 
 const cheerio = require('cheerio');
 
-const parseStore = (user, site, proxy='', delay) => {
-    let link = proxy + "http://www.ebay." + site + "/sch/rss/m.html?_ssn=" + user + "&_dmd=7" + "&_ipg=200" + "&_rss=1" + "&_pgn=1";
-    parsePage({link: link, modified: false}, {}, delay)
-    .then((props, items) => {
-        console.log(props)
-        if(props.modified) {
-            //const newLink = link + 1;
-            // parsePage({link: newLink, modified: false}, items, delay)
+const parseStore = ({user, site, delay, sold}) => {
+    let link = "http://www.ebay." + site + "/sch/rss/m.html?_ssn=" + user + "&_dmd=7" + "&_ipg=200" + "&_rss=1"; 
+    if(sold) {
+        link = link + "&LH_Sold=1" + "&LH_Complete=1";
+    }
+    link = link + "&_pgn=1";
+    
+    parsePage({link: link, modified: false, delay: delay, items:{}})
+    .then(({link, modified, count, items}) => {
+        if(modified) {
+            console.log("called...");
+            const newPageNum = Number(link.substring(link.lastIndexOf("=") + 1)) + 1;
+            const newLink = link.substring(0, link.lastIndexOf('=') + 1) + newPageNum.toString();
+            console.log(newLink);
+            parsePage({link: link, modified: modified, count: count, items: items});
         } else {
 
         }
@@ -23,13 +30,15 @@ const parseStore = (user, site, proxy='', delay) => {
     })
 }
 
-const parsePage = (props, items={}, delay=5000) => { // props {link: '', modified: ''}
+const parsePage = ({link, modified, delay, items}) => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
-            parser.parseURL(props.link, (err, feed) => {
+            
+            parser.parseURL(link, (err, feed) => {
                 if (err) reject(err);
-
-                feed.items.forEach(entry => {     
+                let count = 0;
+                feed.items.forEach(entry => {  
+                    count = count + 1;   
                     //Item number from URL:
                     let re = /\?[0-9]*/; 
                     const itemNumber = reverseString(re.exec(reverseString(entry.link))[0]).replace('?','');
@@ -48,10 +57,11 @@ const parsePage = (props, items={}, delay=5000) => { // props {link: '', modifie
                             price: price,
                             itemNumber: itemNumber
                         });
-                        props.modified = true;
+                        modified = true;
                     }
                 })
-                resolve(props, items);
+                console.log(count);
+                resolve({link: link, modified: modified, count: count, items: items});
             });
         }, delay + Math.random() * 5000);
     })
@@ -61,7 +71,7 @@ const reverseString = (text) => {
     return text.split("").reverse().join("");
 }
 
-parseStore('hockey-grandpa', 'ca', 1);
-//parseStore('achstar91', 'co.uk')
 
+parseStore({user:'achstar91', site:'co.uk', delay:1, sold:true});
+//parseStore('achstar91', 'co.uk')
 
