@@ -6,8 +6,6 @@ const parser = new rss({
 
 const cheerio = require('cheerio');
 
-const fs = require('fs');
-
 const parseStore = async ({user, site, delay, sold}) => {
     let link = "http://www.ebay." + site + "/sch/rss/m.html?_ssn=" + user + "&_dmd=7" + "&_ipg=100" + "&_rss=1"; 
     if(sold) {
@@ -27,7 +25,6 @@ const sequencer = (props) => {
                 const newPageNum = Number(result.link.substring(result.link.lastIndexOf("=") + 1)) + 1;
                 const newLink = result.link.substring(0, result.link.lastIndexOf('=') + 1) + newPageNum.toString();
                 result.link  = newLink;
-                console.log(result.link)
                 sequencer(result);
             } else {
                 for (const entry of result.items.entries()) {
@@ -44,7 +41,6 @@ const sequencer = (props) => {
 const parsePage = ({link, modified, delay, items, count}) => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
-            console.log(link, modified, delay, count);
             parser.parseURL(link, (err, feed) => {
                 if (err) reject(err);
                 let change = false;
@@ -82,6 +78,6 @@ const reverseString = (text) => {
 }
 
 
-parseStore({user:'achstar91', site:'co.uk', delay:2500, sold:false});
-//parseStore('achstar91', 'co.uk')
+//parseStore({user:'achstar91', site:'co.uk', delay:2500, sold:false});
+
 
