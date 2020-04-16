@@ -5,8 +5,10 @@ const dbConnectString = process.env.MONGO_CONNECTION || require('./config').keys
 
 const controller = require('./controllers/admin');
 const mongoose = require('mongoose');
+const client = require('./auxiliary/client');
 app.set('view engine', 'ejs');
 
+app.get('/', client.getClient);
 app.get('/', controller.getDash);
 mongoose.connect(dbConnectString, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(result => {
