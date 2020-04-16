@@ -1,3 +1,11 @@
+const agents = require('../auxiliary/user-agents');
+const rss = require('rss-parser');
+const parser = new rss({
+    headers: {'User-Agent': agents.get_agent()}
+});
+
+const cheerio = require('cheerio');
+
 const parseStore = async ({user, site, delay, sold}) => {
     let link = "http://www.ebay." + site + "/sch/rss/m.html?_ssn=" + user + "&_dmd=7" + "&_ipg=100" + "&_rss=1"; 
     if(sold) {
@@ -6,8 +14,6 @@ const parseStore = async ({user, site, delay, sold}) => {
     link = link + "&_pgn=1";
     
     sequencer({link: link, modified: false, delay: delay, items:new Map(), count:0});
-    
-
 }
 
 const sequencer = (props) => {
@@ -71,3 +77,4 @@ const reverseString = (text) => {
 
 module.exports.parseStore = parseStore;
 //parseStore({user:'achstar91', site:'co.uk', delay:2500, sold:false});
+parseStore({user:'achstar91', site:'co.uk', delay:2500, sold:true});
