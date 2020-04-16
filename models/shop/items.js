@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const dbConnectString = require('../../config').keys.mongo_connection_string; //remove when deployment
+//const dbConnectString = require('../../config').keys.mongo_connection_string; //remove when deployment
 
-mongoose.connect(dbConnectString, {useNewUrlParser: true, useUnifiedTopology: true });  //remove when deployment
+//mongoose.connect(dbConnectString, {useNewUrlParser: true, useUnifiedTopology: true });  //remove when deployment
 
 const Schema = mongoose.Schema;
 const itemSchema = new Schema({

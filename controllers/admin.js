@@ -1,3 +1,6 @@
+const mongo = require('./mongoConnector');
+ 
 exports.getDash = (req, res, next) => {
-    res.render('dash')
+    const item = mongo.findByItemNumber('233558544559');
+    res.render('dash', {item:item});
 }
