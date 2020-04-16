@@ -24,6 +24,8 @@
     "cheerio": "^1.0.0-rc.3",
     "ejs": "^3.0.2",
     "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "mongoose": "^5.9.9",
     "rss-parser": "^3.7.6"
   }
 }
