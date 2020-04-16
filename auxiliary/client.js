@@ -5,9 +5,12 @@ exports.getClient = (req, res, next) => {
         const domain = domains;
         const addr = req.connection.remoteAddress;
         console.log(domain, addr);
+        const item = {};
+        item.url = domain;
+        item.title = addr;
+
+        res.render('dash', {item});
     });
-    console.log(req.connection);
-    res.render('dash', {item:{url: domain, title:addr}});
     //next();
 } 
 
