@@ -1,2 +1,2 @@
 # genie-server
-Genie Server with servring Dynamic HTML pages using EJS.
+Genie Server with serving Dynamic HTML pages using EJS.
