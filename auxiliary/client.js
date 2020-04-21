@@ -9,8 +9,8 @@ exports.getClient = (req, res, next) => {
         item.url = domain;
         item.title = addr;
 
-        res.render('dash', {item});
+        //res.render('dash', {item});
     });
-    //next();
+    next();
 } 
 

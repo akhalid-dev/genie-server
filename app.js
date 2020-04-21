@@ -8,8 +8,8 @@ const mongoose = require('mongoose');
 const client = require('./auxiliary/client');
 app.set('view engine', 'ejs');
 
-app.get('/', client.getClient);
-//app.get('/', controller.getDash);
+//app.get('/', client.getClient);
+app.get('/', controller.getDash);
 mongoose.connect(dbConnectString, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(result => {
     app.listen(port);
